@@ -1,0 +1,2 @@
+aioharmony>=0.1.12
+socketIO-client>=0.7.2
