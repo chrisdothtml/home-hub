@@ -10,8 +10,7 @@
     "socket.io": "1.7.2"
   },
   "devDependencies": {
-    "@chrisdothtml/eslint-config": "^0.1.0",
-    "eslint": "^5.16.0",
-    "prettier": "^1.17.0"
+    "@chrisdothtml/eslint-config": "^0.1.1",
+    "eslint": "^5.16.0"
   }
 }
