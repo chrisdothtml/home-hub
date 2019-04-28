@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "postinstall": "pip3 install -r requirements.txt",
     "start": "node -r esm lib/index.js",
     "test": "node -r esm lib/index.test.js"
   },
