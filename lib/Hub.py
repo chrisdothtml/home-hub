@@ -55,6 +55,12 @@ async def handleInput(data):
 
     await CLIENT.send_commands(commandList)
 
+  elif commandName == 'start-activity':
+    response = await CLIENT.start_activity(props['id'])
+
+    if not response[0]:
+      return '{"error": "{}"}'.format(response[1])
+
   return '{}'
 
 if __name__ == '__main__':
@@ -64,11 +70,9 @@ if __name__ == '__main__':
   socket = SocketIO('localhost', SOCKET_PORT)
 
   def handler(*data):
-    result = loop.run_until_complete(
-      asyncio.gather(
-        handleInput(data)
-      )
-    )
+    result = loop.run_until_complete(asyncio.gather(
+      handleInput(data)
+    ))
 
     socket.emit('output', json.dumps(result[0]))
 
