@@ -1,17 +1,23 @@
 {
   "private": true,
   "scripts": {
+    "build-ui": "parcel build src/client/index.html",
+    "dev-ui": "parcel src/client/index.html",
     "postinstall": "pip3 install -r requirements.txt",
-    "start": "node -r esm lib/index.js",
-    "test": "node -r esm lib/index.test.js"
+    "start": "node -r esm -r dotenv/config src/server/index.js"
   },
+  "browserslist": [
+    "last 2 Chrome versions"
+  ],
   "dependencies": {
+    "dotenv": "^7.0.0",
     "esm": "^3.2.22",
     "express": "^4.16.4",
     "socket.io": "1.7.2"
   },
   "devDependencies": {
     "@chrisdothtml/eslint-config": "^0.1.1",
-    "eslint": "^5.16.0"
+    "eslint": "^5.16.0",
+    "parcel-bundler": "^1.12.3"
   }
 }

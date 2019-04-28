@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Home Hub</title>
+    <link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <button id="volup">Volume up</button>
+    <button id="voldown">Volume down</button>
+    <script src="./index.js"></script>
+    <script>
+      document.getElementById('volup').addEventListener('click', (event) => {
+        event.preventDefault()
+        window.send('harmony/send-command', {
+          command: 'VolumeUp', device: 'Avox Amp'
+        }).then(() => console.log('done'))
+      })
+
+      document.getElementById('voldown').addEventListener('click', (event) => {
+        event.preventDefault()
+        window.send('harmony/send-command', {
+          command: 'VolumeDown', device: 'Avox Amp'
+        }).then(() => console.log('done'))
+      })
+    </script>
+  </body>
+</html>

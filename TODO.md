@@ -1,0 +1,1 @@
+- figure out why send-command from the ui fails intermittently
