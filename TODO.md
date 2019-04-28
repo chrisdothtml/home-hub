@@ -1,1 +1,0 @@
-- figure out how discovery works and add option to not provide hub IP and just use the first one found
