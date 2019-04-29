@@ -1,12 +1,18 @@
 import http from 'http'
+import path from 'path'
+import Bundler from 'parcel-bundler'
 import express from 'express'
 import SocketIO from 'socket.io'
 import HarmonyHub from './HarmonyHub/index.js'
 
 const { HARMONY_HUB_IP, PORT } = process.env
+const ROOT_DIR = path.resolve(__dirname, '../..')
+const clientEntry = path.resolve(ROOT_DIR, 'src/client/index.html')
+const bundler = new Bundler(clientEntry)
 const hub = new HarmonyHub(HARMONY_HUB_IP)
-const server = express()
-const socket = SocketIO(http.createServer(server).listen(PORT))
+const app = express()
+const server = http.createServer(app)
+const socket = SocketIO(server)
 let READY_PROMISE
 
 function onReady() {
@@ -17,7 +23,8 @@ function onReady() {
   return READY_PROMISE
 }
 
-server.get('/harmony/config', (req, res) => {
+app.use(bundler.middleware())
+app.get('/harmony/config', (req, res) => {
   onReady()
     .then(hub.getConfig)
     .then((config) => {
@@ -39,4 +46,8 @@ socket.on('connection', (client) => {
         .then(callback)
     })
   }
+})
+
+server.listen(PORT, () => {
+  console.log(`Server started at http://localhost:${PORT}`)
 })

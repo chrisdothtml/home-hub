@@ -1,8 +1,6 @@
 {
   "private": true,
   "scripts": {
-    "build-ui": "parcel build src/client/index.html",
-    "dev-ui": "parcel src/client/index.html",
     "postinstall": "pip3 install -r requirements.txt",
     "start": "node -r esm -r dotenv/config src/server/index.js"
   },

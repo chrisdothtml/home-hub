@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 
-const socket = io(`http://localhost:${process.env.PORT}`)
+const socket = io()
 
 async function send(channel, payload = {}) {
   return new Promise((resolve) => {
