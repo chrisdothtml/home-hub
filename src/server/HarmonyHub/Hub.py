@@ -1,3 +1,8 @@
+###
+# NOTE: most of the logic in here was referenced from here:
+# https://github.com/ehendrix23/aioharmony/blob/0961024/aioharmony/__main__.py
+###
+
 import asyncio
 import json
 import sys
@@ -53,15 +58,23 @@ async def handleInput(data):
       if props['delay'] > 0:
         commandList.append(props['delay'])
 
-    await CLIENT.send_commands(commandList)
+    resultList = await CLIENT.send_commands(commandList)
+
+    if resultList:
+      errorList = []
+
+      for result in resultList:
+        errorList.append(result.msg)
+
+      return { 'errors': errorList }
 
   elif commandName == 'start-activity':
     response = await CLIENT.start_activity(props['id'])
 
     if not response[0]:
-      return '{"error": "{}"}'.format(response[1])
+      return { 'errors': [ response[1] ] }
 
-  return '{}'
+  return {}
 
 if __name__ == '__main__':
   loop = asyncio.new_event_loop()
