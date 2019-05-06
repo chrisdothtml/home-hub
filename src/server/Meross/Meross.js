@@ -1,32 +1,36 @@
-/*
- * The base class that handles connection and communication with
- * the python process and hub
- */
-
 import http from 'http'
 import path from 'path'
 import { spawn } from 'child_process'
 import express from 'express'
 import SocketIO from 'socket.io'
 
-const PYTHON_CLIENT_PATH = path.join(__dirname, 'Hub.py')
+const PYTHON_CLIENT_PATH = path.join(__dirname, 'Meross.py')
 
-export default class Hub {
+export default class Meross {
   /**
-   * @arg {string} hubIP
    * @arg {object} opts
    * @arg {boolean} opts.debug
+   * @arg {string} opts.email
+   * @arg {string} opts.password
    * @example
-   * const hub = new HarmonyHub('10.0.0...')
+   * const meross = new Meross({
+   *   email: '...',
+   *   password: '...',
+   * })
    *
-   * await hub.connect()
+   * await meross.connect()
    * //...
-   * await hub.disconnect()
+   * await meross.disconnect()
    */
-  constructor(hubIP, opts = {}) {
+  constructor(opts = {}) {
+    if (!opts.email || !opts.password) {
+      throw new Error('Meross credentials required')
+    }
+
     this.DEBUG = opts.debug
     this.clientSocket = null
-    this.hubIP = hubIP
+    this.merossEmail = opts.email
+    this.merossPassword = opts.password
     this.pythonProcess = null
     this.server = null
     this.socket = null
@@ -55,7 +59,12 @@ export default class Hub {
 
       this.pythonProcess = spawn(
         'python3',
-        [PYTHON_CLIENT_PATH, server.address().port, this.hubIP],
+        [
+          PYTHON_CLIENT_PATH,
+          server.address().port,
+          this.merossEmail,
+          this.merossPassword,
+        ],
         spawnOpts
       )
     })
@@ -80,10 +89,8 @@ export default class Hub {
   }
 
   async disconnect() {
-    return this.send('close').finally(() => {
-      if (this.pythonProcess) this.pythonProcess.kill()
-      if (this.socket) this.socket.close()
-      if (this.server) this.server.close()
-    })
+    if (this.pythonProcess) this.pythonProcess.kill()
+    if (this.socket) this.socket.close()
+    if (this.server) this.server.close()
   }
 }
