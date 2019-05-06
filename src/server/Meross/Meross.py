@@ -1,3 +1,8 @@
+###
+# NOTE: logic referenced from here:
+# https://github.com/albertogeniola/MerossIot/tree/e0e1fda#usage
+###
+
 import json
 import sys
 

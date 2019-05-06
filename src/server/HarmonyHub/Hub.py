@@ -1,5 +1,5 @@
 ###
-# NOTE: most of the logic in here was referenced from here:
+# NOTE: most of this logic was referenced from here:
 # https://github.com/ehendrix23/aioharmony/blob/0961024/aioharmony/__main__.py
 ###
 

@@ -1,7 +1,16 @@
-# harmony-hub
+# home-hub
 
-> js client for controlling Logitech Harmony Hubs
+> A single UI for all my various home control services
 
-## Credits
+## Install
 
-- [aioharmony](https://github.com/ehendrix23/aioharmony)
+```sh
+# postinstall script installs python dependencies
+yarn
+```
+
+## Start server
+
+```sh
+yarn start
+```
