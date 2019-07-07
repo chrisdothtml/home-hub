@@ -26,5 +26,8 @@
   "devDependencies": {
     "@chrisdothtml/eslint-config": "^0.1.6",
     "eslint": "^5.16.0"
+  },
+  "resolutions": {
+    "engine.io-client": "~3.1.0"
   }
 }
