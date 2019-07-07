@@ -16,6 +16,7 @@
     "esm": "^3.2.22",
     "express": "^4.16.4",
     "just-kebab-case": "^1.1.0",
+    "p-queue": "^6.0.2",
     "parcel-bundler": "^1.12.3",
     "portfinder": "^1.0.20",
     "socket.io": "1.7.2",

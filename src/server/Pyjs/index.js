@@ -1,7 +1,10 @@
 import { spawn } from 'child_process'
+import Queue from 'p-queue'
 import { getPortPromise as getPort } from 'portfinder'
-import uuid from 'uuid/v4'
 import socketIO from 'socket.io'
+import uuid from 'uuid/v4'
+
+const PORT_QUEUE = new Queue({ concurrency: 1 })
 
 export default class Pyjs {
   /**
@@ -29,7 +32,8 @@ export default class Pyjs {
    * @returns {Promise<void>}
    */
   async connect() {
-    const port = await getPort()
+    // use a queue for this to support parallel calls
+    const port = await PORT_QUEUE.add(() => getPort())
     const socket = socketIO.listen(port)
 
     this.socket = socket
