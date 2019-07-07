@@ -1,8 +1,5 @@
-/*
- * Convenience utils for working with the base hub
- */
-
-import Hub from './Hub.js'
+import path from 'path'
+import Pyjs from './Pyjs'
 
 export function getId(config, type, name) {
   for (const [key, value] of Object.entries(config[type])) {
@@ -16,13 +13,40 @@ export function getId(config, type, name) {
   return null
 }
 
-export default class HarmonyHub extends Hub {
+export default class HarmonyHub {
+  /**
+   * @arg {string} hubIP
+   * @example
+   * const hub = new HarmonyHub('10.0.0...')
+   *
+   * await hub.connect()
+   * //...
+   * await hub.disconnect()
+   */
+  constructor(hubIP) {
+    this.pyjs = new Pyjs({
+      // debug: true,
+      entry: path.join(__dirname, 'HarmonyHub.py'),
+      spawnArgs: [hubIP],
+    })
+  }
+
+  async connect() {
+    return this.pyjs.connect()
+  }
+
+  async disconnect() {
+    return this.pyjs
+      .send({ commandName: 'close' })
+      .then(() => this.pyjs.disconnect())
+  }
+
   async getConfig() {
     if (!this.DEBUG && this._cachedConfig) {
       return this._cachedConfig
     }
 
-    const result = await this.send('get-config')
+    const result = await this.pyjs.send({ commandName: 'get-config' })
 
     if (!this.DEBUG) {
       this._cachedConfig = result
@@ -32,11 +56,12 @@ export default class HarmonyHub extends Hub {
   }
 
   /**
-   * @arg {object} opts
-   * @arg {string} opts.command
-   * @arg {number} opts.delay
-   * @arg {string} opts.device
-   * @arg {number} opts.repeats
+   * @arg {{
+   *   command: string,
+   *   delay: number,
+   *   device: string,
+   *   repeats: number,
+   * }} opts
    * @example
    * await hub.sendCommand({
    *   device: 'Samsung TV',
@@ -56,7 +81,7 @@ export default class HarmonyHub extends Hub {
 
       opts.deviceId = deviceId
       delete opts.device
-      return this.send('send-command', opts)
+      return this.pyjs.send({ commandName: 'send-command', ...opts })
     } else {
       throw new Error(`Device doesn't exist in hub: ${opts.device}`)
     }
@@ -72,7 +97,7 @@ export default class HarmonyHub extends Hub {
     const id = getId(config, 'Activities', activity)
 
     if (id) {
-      return this.send('start-activity', { id })
+      return this.pyjs.send({ commandName: 'start-activity', id })
     } else {
       throw new Error(`Activity doesn't exist in hub: ${activity}`)
     }
@@ -84,6 +109,6 @@ export default class HarmonyHub extends Hub {
    * await hub.stopActivity()
    */
   async stopActivity() {
-    return this.send('start-activity', { id: '-1' })
+    return this.pyjs.send({ commandName: 'start-activity', id: '-1' })
   }
 }

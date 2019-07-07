@@ -3,19 +3,16 @@
 # https://github.com/albertogeniola/MerossIot/tree/e0e1fda#usage
 ###
 
-import json
 import sys
-
 from meross_iot.api import MerossHttpClient
-from socketIO_client import SocketIO
+from Pyjs.client import on_message
 
 CLIENT = None
 MEROSS_EMAIL = sys.argv[2]
 MEROSS_PASSWORD = sys.argv[3]
-SOCKET_PORT = int(sys.argv[1])
 
-def handleInput(data):
-  (commandName, props) = data
+def handleInput(props):
+  commandName = props['commandName']
 
   if commandName == 'get-devices':
     devices = CLIENT.list_supported_devices()
@@ -23,7 +20,8 @@ def handleInput(data):
 
     for device in devices:
       result.append({
-        'name': device._name
+        'name': device._name,
+        'isOn': device.get_status(0)
       })
 
     return result
@@ -42,11 +40,8 @@ def handleInput(data):
 
 if __name__ == '__main__':
   CLIENT = MerossHttpClient(email=MEROSS_EMAIL, password=MEROSS_PASSWORD)
-  socket = SocketIO('localhost', SOCKET_PORT)
 
-  def handler(*data):
-    result = handleInput(data)
-    socket.emit('output', json.dumps(result))
+  def handler(data, callback):
+    callback(handleInput(data))
 
-  socket.on('input', handler)
-  socket.wait()
+  on_message(handler)

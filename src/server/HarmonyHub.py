@@ -4,26 +4,21 @@
 ###
 
 import asyncio
-import json
 import sys
-
 import aioharmony.exceptions
 from aioharmony.harmonyapi import HarmonyAPI, SendCommandDevice
 from aioharmony.responsehandler import Handler
-from socketIO_client import SocketIO
+from Pyjs.client import on_message
 
 CLIENT = None
 HUB_IP = sys.argv[2]
-SOCKET_PORT = int(sys.argv[1])
 
 async def getClient(ip_address):
   client = HarmonyAPI(ip_address)
 
   if await client.connect():
-    print('Connected to HUB {}'.format(client.name))
     return client
 
-  print('Unable to connect to hub')
   return None
 
 # TODO: combine with getClient
@@ -36,8 +31,8 @@ async def setGlobalClient():
     print('Timed out when trying to connect to hub')
     raise
 
-async def handleInput(data):
-  (commandName, props) = data
+async def handleInput(props):
+  commandName = props['commandName']
 
   if commandName == 'close':
     await CLIENT.close()
@@ -80,14 +75,11 @@ if __name__ == '__main__':
   loop = asyncio.new_event_loop()
   asyncio.set_event_loop(loop)
   loop.run_until_complete(setGlobalClient())
-  socket = SocketIO('localhost', SOCKET_PORT)
 
-  def handler(*data):
+  def handler(data, callback):
     result = loop.run_until_complete(asyncio.gather(
       handleInput(data)
     ))
+    callback(result[0])
 
-    socket.emit('output', json.dumps(result[0]))
-
-  socket.on('input', handler)
-  socket.wait()
+  on_message(handler)

@@ -4,8 +4,8 @@ import Bundler from 'parcel-bundler'
 import express from 'express'
 import kebabCase from 'just-kebab-case'
 import SocketIO from 'socket.io'
-import HarmonyHub from './HarmonyHub/index.js'
-import Meross from './Meross/index.js'
+import HarmonyHub from './HarmonyHub.js'
+import Meross from './Meross.js'
 
 const { HARMONY_HUB_IP, MEROSS_EMAIL, MEROSS_PASSWORD, PORT } = process.env
 const ROOT_DIR = path.resolve(__dirname, '../..')
