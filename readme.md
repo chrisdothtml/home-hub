@@ -1,3 +1,5 @@
+**NOTE: Archived. Just use [Home Assistant](https://www.home-assistant.io/)**
+
 # home-hub
 
 > A single UI for all my various home control services
